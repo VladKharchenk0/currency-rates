@@ -1,0 +1,28 @@
+server:
+  port: 9090
+  shutdown: graceful
+  tomcat:
+    connection-timeout: 2s
+    keep-alive-timeout: 15s
+    threads:
+      max: 50
+      min-spare: 5
+
+spring:
+  application:
+    name: exchange-service
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
+  datasource:
+    username: user
+    password: password
+    url: jdbc:postgresql://localhost:8080/ratesdb
+    hikari:
+      connection-timeout: 2000 #ms
+      maximum-pool-size: 5
+  sql:
+    init:
+      mode: always
+
+exchange:
+  nbu-currency-uri: "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange/?json"

@@ -1,0 +1,9 @@
+FROM postgres:latest
+
+# Set environment variables
+ENV POSTGRES_USER=user
+ENV POSTGRES_PASSWORD=password
+ENV POSTGRES_DB=ratesdb
+
+# Expose PostgreSQL port
+EXPOSE 5432

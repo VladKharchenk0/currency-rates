@@ -1,0 +1,58 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.4'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.exchange'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+ext {
+	set('springCloudVersion', "2021.0.3")
+	set('testcontainersVersion', "1.17.3")
+}
+
+repositories {
+	mavenCentral()
+}
+
+bootRun {
+	systemProperty 'spring.profiles.active', 'mock'
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.retry:spring-retry'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.flywaydb:flyway-core'
+	implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+
+
+	runtimeOnly 'org.postgresql:postgresql'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+	testImplementation 'org.testcontainers:postgresql'
+
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+	}
+}
+
+tasks.named('bootBuildImage') {
+	builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  currency-rates-db:
+    build:
+      context: .
+      dockerfile: postgres/Dockerfile
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ratesdb
+    ports:
+      - "5432:5432"
+    networks:
+      - exchange-network
+
+  exchange-rate-service:
+    depends_on:
+      - currency-rates-db
+    image: "exchangerate-service:0.0.1-SNAPSHOT"
+    ports:
+      - "9090:9090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://currency-rates-db:5432/ratesdb
+      SPRING_PROFILES_ACTIVE: ${PROFILE:-default}
+    networks:
+      - exchange-network
+
+networks:
+  exchange-network:
+    driver: bridge
